@@ -6,5 +6,4 @@ export function useSpots(){
         queryKey: ['spots'],
         queryFn: () => SpotService.listAll()
     });
-    SpotService.listAll();
 }

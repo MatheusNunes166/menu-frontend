@@ -8,41 +8,56 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { MapPin } from "lucide-react"
-import { useSpots } from "../hooks/use-hook";
+import { useSpots } from "../hooks/use-hook"
+import type { spotDTO } from "../dtos/spot.dto";
+import { cn } from "cn";
 
 interface SpotDialogProps {
-    open?: boolean;
+  open: boolean;
+  onSelect: (spot: spotDTO) => void;
+  selectedSpotId?: string;
 }
 
-export function SpotDialog({ open }: SpotDialogProps) {
-    const { data: spots = [] } = useSpots();
+export function SpotDialog({
+  open,
+  onSelect,
+  selectedSpotId
+}: SpotDialogProps) {
 
-    return (
-       <Dialog>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>Selecione sua mesa</DialogTitle>
-      <DialogDescription>
-        Escolha a mesa que você está para fazer o pedido.
-      </DialogDescription>
-    </DialogHeader>
+  const { data: spots = [] } = useSpots();
 
-    <div className="min-h-0 overflow-y-auto">
-        <div className="grid grid-cols-3 gap-3">
+  return (
+    <Dialog open={open}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Selecione a sua mesa</DialogTitle>
+          <DialogDescription>
+            Escolha a mesa que você está para fazer o pedido.
+          </DialogDescription>
+        </DialogHeader>
 
-        {spots?.map( spot => (
-            <Button
-            key={spot.id}
-        variant="outline"
-        className="h-auto min-h-20 flex-col p-16"
-        >
-          <MapPin className="size-6" />
-          {spot.name}
-        </Button>
-        ))}
+        <div className="min-h-0 overflow-y-auto">
+          <div className="grid grid-cols-3 gap-3">
+             
+            { spots.map( spot => (
+              <Button 
+                key={spot.id}
+                variant="outline"
+                className={cn(
+                  'h-auto min-h-20 flex-col p-4',
+                  spot.id === selectedSpotId && 'border-primary bg-accent text-primary' 
+                )}
+                
+                onClick={() => onSelect(spot)}
+              >
+                <MapPin className="size-6" />
+                { spot.name }
+              </Button>
+            ))}
+          </div>
         </div>
-    </div>
-  </DialogContent>
-</Dialog>
-    )
+
+      </DialogContent>
+    </Dialog>
+  )
 }

@@ -1,23 +1,42 @@
-import { Button } from "@/components/button";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { MapPin } from "lucide-react";
 import { SpotDialog } from "./spot-dialog";
 import { useState } from "react";
+import { Button } from "@base-ui/react";
+import type { spotDTO } from "../dtos/spot.dto";
 
 export function SpotButton() {
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const [dialogOpen, setDialogOpen] = useState(false);
 
-    return (
-        <div className="flex itens-center justify-center"> 
-         <Button
-            className="flex cursor-pointer flex-col itens-center gap-1 rounded-2xl px-6 py-4 text-brand-foreground transition-colors hover:bg-primary hover::text-brand-foreground"
-            onClick={() => setDialogOpen(true)}
-         >
-            <MapPin className="size-6" />
-            Selecionar Mesa
-         </Button>
+  const [dialogOpen, setDialogOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedSpot, setSelectedSpot] = useState<spotDTO | null>(() => {
+    const spotStorage = localStorage.getItem('spot')
+    return spotStorage ? JSON.parse(spotStorage) : null;
+  });
 
-         <SpotDialog open={dialogOpen} />
-        </div>
-    )
+  function handleSelect(spot: spotDTO){
+    localStorage.setItem('spot', JSON.stringify(spot));
+    setSelectedSpot(spot);
+    setDialogOpen(false);
+  }
+
+
+  return (
+    <div className="flex items-center justify-center">
+      <Button
+        className="flex cursor-pointer flex-col items-center gap-1 
+          rounded-2xl px-6 py-3 text-brand 
+          transition-colors hover:bg-primary hover:text-brand-foreground"
+        onClick={() => setDialogOpen(true)}
+      >
+        <MapPin className="size-6" />
+        {selectedSpot ? selectedSpot.name : 'Selecione a sua mesa'}
+      </Button>
+
+      <SpotDialog open={dialogOpen} 
+      onSelect={handleSelect}
+      selectedSpotId={selectedSpot?.id}
+      />
+    </div>
+  )
 }
