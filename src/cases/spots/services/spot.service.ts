@@ -1,4 +1,5 @@
-import { api } from "../../../lib/axios"
+
+import { api } from "@/lib/axios";
 import type { spotDTO } from "../dtos/spot.dto"
 
 const ENDPOINT = '/spots';
